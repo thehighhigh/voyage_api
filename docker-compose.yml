@@ -1,0 +1,48 @@
+version: '3'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: voyage_api_db_container
+    env_file: ./mysql/mysql.env
+    environment:
+      - TZ=Asia/Tokyo
+    ports:
+      - '3306:3306'
+    restart: always
+    volumes:
+      - ./mysql/conf:/etc/mysql/conf.d/:ro
+      - mysqldata:/var/lib/mysql
+    networks:
+      - container-link
+
+  app:
+    build: .
+    container_name: voyage_api_app_container
+    env_file: ./app.env
+    environment:
+      - TZ=Asia/Tokyo
+      - DEBUG=app:*
+    tty: true
+    ports:
+      - '3000:3000'
+    restart: always
+    volumes:
+      - ./src:/app
+    working_dir: /app
+    command: npm start
+    networks:
+      - container-link
+    depends_on:
+      - mysql
+
+#使用するネットワークを作成。docker-composeの場合service以下の名前を使って名前解決されるため、appとmysqlが自動的に接続される。
+networks:
+  default:
+    external:
+      name: bridge
+  container-link:
+    # これが作成されるネットワーク名（同名がなければ自動生成される）
+    name: docker.internal
+
+volumes:
+  mysqldata:
