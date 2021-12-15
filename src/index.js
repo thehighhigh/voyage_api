@@ -61,7 +61,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
       let fullRequired = [req.body.title, req.body.making_time, req.body.serves, req.body.ingredients, req.body.cost].every(v => !!v === true)
       if(err || !fullRequired) {
         console.log(err)
-        return res.json(
+        return res.status(200).json(
           {
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
@@ -71,7 +71,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
       con.query(`SELECT * FROM recipes WHERE id = ?`, results.insertId,
         (err, result) => {
           result[0].cost = result[0].cost.toString()
-          return res.json(
+          return res.status(200).json(
             {
               message: "Recipe successfully created!",
               recipies: result 
