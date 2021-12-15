@@ -36,7 +36,7 @@ rl.on('close', function(){
 
 app.use(express.json())
 
-app.get('/recipies', (req, res) => con.execute(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
+app.get('/recipies', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
   (err, result) => {
     for(let el of result) {
       el.cost = el.cost.toString()
@@ -61,7 +61,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
           }
         )
       }
-      con.execute(`SELECT * FROM recipes WHERE id = ${results.insertId}`,
+      con.query(`SELECT * FROM recipes WHERE id = ?`, results.insertId,
         (err, result) => {
           result[0].cost = result[0].cost.toString()
           return res.json(
