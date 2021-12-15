@@ -5,12 +5,16 @@ const fs = require('fs')
 const readline = require('readline')
 const mysql = require('mysql2')
 
-const con = mysql.createConnection({
-  host: 'mysql',
-  user: 'root',
-  password: 'root',
-  database: 'voyage_api'
-})
+if(process.env.NODE_ENV === 'production') {
+  mysql.createConnection(process.env.DATABASE_URL)
+} else {
+  mysql.createConnection({
+    host: 'mysql',
+    user: 'root',
+    password: 'root',
+    database: 'voyage_api'
+  })
+}
 
 con.connect((err) => {
   if (err) {
