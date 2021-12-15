@@ -18,7 +18,7 @@ if(process.env.NODE_ENV === 'production') {
 }
 con.connect((err) => {
   if (err) {
-    console.log('error connecting you are wrong: ' + err.stack)
+    console.log('err connecting you are wrong: ' + err.stack)
     return
   }
   console.log('sql connect success')
@@ -42,6 +42,7 @@ app.use(express.json())
 
 app.get('/recipies', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
   (err, result) => {
+    console.log(err)
     for(let el of result) {
       el.cost = el.cost.toString()
     }
@@ -56,8 +57,9 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
       req.body.ingredients,
       req.body.cost,
     ],
-    function (error, results, fields) {
-      if(error) {
+    function (err, results, fields) {
+      if(err) {
+        console.log(err)
         return res.json(
           {
             "message": "Recipe creation failed!",
@@ -83,6 +85,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
 app.get('/recipies/:id', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes WHERE id = ?`,
   [req.params.id],
   function (err, result) {
+    console.log(err)
     result[0].cost = result[0].cost.toString()
     return res.json(
       {
@@ -103,8 +106,10 @@ app.patch('/recipies/:id', (req, res) => con.query(`UPDATE recipes SET title = ?
     req.params.id,
   ],
   function(err, results) {
+    console.log(err)
     con.query(`SELECT * FROM recipes WHERE id = ?`, [err ? 1 : req.params.id],
       (err, result) => {
+        console.log(err)
         result[0].cost = result[0].cost.toString()
         let { title, making_time, serves, ingredients, cost } = result[0]
         return res.json(
@@ -122,6 +127,7 @@ app.patch('/recipies/:id', (req, res) => con.query(`UPDATE recipes SET title = ?
 
 app.delete('/recipies/:id', (req, res) => con.query('DELETE FROM recipes WHERE id = ?', req.params.id,
   function (err, result) {
+    console.log(err)
     if(result.affectedRows === 0) {
       return res.json(
         { "message":"No Recipe found" }
