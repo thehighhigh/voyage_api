@@ -21,7 +21,7 @@ con.connect((err) => {
 })
 
 let rl = readline.createInterface({
-  input: fs.createReadStream('./sql/create.sql'),
+  input: fs.createReadStream(`${__dirname}/sql/create.sql`),
   terminal: false
  })
 rl.on('line', function(chunk){
