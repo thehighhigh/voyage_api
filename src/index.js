@@ -58,7 +58,8 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
       req.body.cost,
     ],
     function (err, results, fields) {
-      if(err) {
+      let fullRequired = [req.body.title, req.body.making_time, req.body.serves, req.body.ingredients, req.body.cost].every(v => !!v === true)
+      if(err || !fullRequired) {
         console.log(err)
         return res.json(
           {
