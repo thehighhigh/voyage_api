@@ -40,16 +40,16 @@ rl.on('close', function(){
 
 app.use(express.json())
 
-app.get('/recipies', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
+app.get('/recipes', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
   (err, result) => {
     console.log(err)
     for(let el of result) {
       el.cost = el.cost.toString()
     }
-    res.json({ recipies: result })
+    res.json({ recipes: result })
   }))
 
-app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, making_time, serves, ingredients, cost) VALUES(?, ?, ?, ?, ?)',
+app.post('/recipes', (req, res, next) => con.query('INSERT INTO recipes(title, making_time, serves, ingredients, cost) VALUES(?, ?, ?, ?, ?)',
     [
       req.body.title,
       req.body.making_time,
@@ -74,7 +74,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
           return res.status(200).json(
             {
               message: "Recipe successfully created!",
-              recipies: result 
+              recipes: result 
             }
           )
         }
@@ -83,7 +83,7 @@ app.post('/recipies', (req, res, next) => con.query('INSERT INTO recipes(title, 
   )
 )
 
-app.get('/recipies/:id', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes WHERE id = ?`,
+app.get('/recipes/:id', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes WHERE id = ?`,
   [req.params.id],
   function (err, result) {
     console.log(err)
@@ -97,7 +97,7 @@ app.get('/recipies/:id', (req, res) => con.query(`SELECT id, title, making_time,
   }
 ))
 
-app.patch('/recipies/:id', (req, res) => con.query(`UPDATE recipes SET title = ?, making_time = ?, serves = ?, ingredients = ?, cost = ? WHERE id = ?`,
+app.patch('/recipes/:id', (req, res) => con.query(`UPDATE recipes SET title = ?, making_time = ?, serves = ?, ingredients = ?, cost = ? WHERE id = ?`,
   [
     req.body.title,
     req.body.making_time,
@@ -116,7 +116,7 @@ app.patch('/recipies/:id', (req, res) => con.query(`UPDATE recipes SET title = ?
         return res.json(
           {
             message: "Recipe successfully updated!",
-            recipies: [
+            recipes: [
               { title, making_time, serves, ingredients, cost }
             ]
           }
@@ -126,7 +126,7 @@ app.patch('/recipies/:id', (req, res) => con.query(`UPDATE recipes SET title = ?
   })
 )
 
-app.delete('/recipies/:id', (req, res) => con.query('DELETE FROM recipes WHERE id = ?', req.params.id,
+app.delete('/recipes/:id', (req, res) => con.query('DELETE FROM recipes WHERE id = ?', req.params.id,
   function (err, result) {
     console.log(err)
     if(result.affectedRows === 0) {
