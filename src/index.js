@@ -42,7 +42,6 @@ app.use(express.json())
 
 app.get('/recipes', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes`,
   (err, result) => {
-    console.log(err)
     for(let el of result) {
       el.cost = el.cost.toString()
     }
@@ -60,7 +59,6 @@ app.post('/recipes', (req, res, next) => con.query('INSERT INTO recipes(title, m
     function (err, results, fields) {
       let fullRequired = [req.body.title, req.body.making_time, req.body.serves, req.body.ingredients, req.body.cost].every(v => !!v === true)
       if(err || !fullRequired) {
-        console.log(err)
         return res.status(200).json(
           {
             "message": "Recipe creation failed!",
@@ -86,7 +84,6 @@ app.post('/recipes', (req, res, next) => con.query('INSERT INTO recipes(title, m
 app.get('/recipes/:id', (req, res) => con.query(`SELECT id, title, making_time, serves, ingredients, cost  FROM recipes WHERE id = ?`,
   [req.params.id],
   function (err, result) {
-    console.log(err)
     result[0].cost = result[0].cost.toString()
     return res.json(
       {
@@ -107,10 +104,8 @@ app.patch('/recipes/:id', (req, res) => con.query(`UPDATE recipes SET title = ?,
     req.params.id,
   ],
   function(err, results) {
-    console.log(err)
     con.query(`SELECT * FROM recipes WHERE id = ?`, [err ? 1 : req.params.id],
       (err, result) => {
-        console.log(err)
         result[0].cost = result[0].cost.toString()
         let { title, making_time, serves, ingredients, cost } = result[0]
         return res.json(
@@ -128,7 +123,6 @@ app.patch('/recipes/:id', (req, res) => con.query(`UPDATE recipes SET title = ?,
 
 app.delete('/recipes/:id', (req, res) => con.query('DELETE FROM recipes WHERE id = ?', req.params.id,
   function (err, result) {
-    console.log(err)
     if(result.affectedRows === 0) {
       return res.json(
         { "message":"No Recipe found" }
