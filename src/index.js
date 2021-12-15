@@ -130,4 +130,4 @@ app.delete('/recipies/:id', (req, res) => con.query('DELETE FROM recipes WHERE i
 ))
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(app.listen(process.env.PORT || 3000), () => console.log(`Example app listening!`))
